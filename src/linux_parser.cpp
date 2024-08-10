@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "linux_parser.h"
+#include <iostream>
+#include <regex>
 
 using std::stof;
 using std::string;
@@ -40,6 +42,7 @@ string LinuxParser::Kernel() {
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
+    //std::cout << "The line is " << line;
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
   }
@@ -66,8 +69,52 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
+
 // TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+float LinuxParser::MemoryUtilization() {
+  string line;
+  std::ifstream filestream(kProcDirectory + kMeminfoFilename);
+  std::cout << "Yop";
+  //std::regex value("[0-9]");
+  string key, size;
+  string mem_total_str = "MemTotal";
+  float mem_total_flt = 0;
+  string mem_avail_str = "MemFree";
+  float mem_avail_flt = 0;
+  float percent_mem_utilized = 0;
+  std::vector<string> keys;
+  keys.push_back(mem_total_str);
+  keys.push_back(mem_avail_str);
+  std::regex raw(mem_total_str);
+
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      linestream >> key >> size;
+
+      for (string key : keys) {
+        std::regex reg_key(key);
+        if(regex_search(line, reg_key)){
+          if(key == mem_total_str){
+            mem_total_flt = stof(size);
+          }
+          if(key == mem_avail_str){
+            mem_avail_flt = stof(size);
+          }
+        }
+      }
+        }
+  }
+  if((mem_total_flt > 0) && (mem_avail_flt > 0)){
+    percent_mem_utilized = (mem_avail_flt / mem_total_flt) * 100;
+    std::cout << "percent_mem_utilized" << percent_mem_utilized;
+
+  }
+
+  return percent_mem_utilized; 
+  }
+
+  
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() { return 0; }

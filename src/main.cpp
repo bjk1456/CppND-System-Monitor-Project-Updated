@@ -3,5 +3,7 @@
 
 int main() {
   System system;
-  NCursesDisplay::Display(system);
+  //system.Kernel();
+  system.MemoryUtilization();
+  //NCursesDisplay::Display(system);
 }

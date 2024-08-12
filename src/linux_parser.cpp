@@ -7,7 +7,9 @@
 #include <iostream>
 #include <regex>
 
+
 using std::stof;
+using std::stol;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -60,7 +62,8 @@ vector<int> LinuxParser::Pids() {
       // Is every character of the name a digit?
       string filename(file->d_name);
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
-        int pid = stoi(filename);
+        int pid = stoi(filename); 
+        std::cout << "The pid is " << pid;
         pids.push_back(pid);
       }
     }
@@ -106,7 +109,7 @@ float LinuxParser::MemoryUtilization() {
         }
   }
   if((mem_total_flt > 0) && (mem_avail_flt > 0)){
-    percent_mem_utilized = (mem_avail_flt / mem_total_flt) * 100;
+    percent_mem_utilized = (mem_avail_flt / mem_total_flt);
     std::cout << "percent_mem_utilized" << percent_mem_utilized;
 
   }
@@ -114,13 +117,47 @@ float LinuxParser::MemoryUtilization() {
   return percent_mem_utilized; 
   }
 
-  
-
 // TODO: Read and return the system uptime
-long LinuxParser::UpTime() { return 0; }
+long LinuxParser::UpTime() {
+  string line;
+  string system_uptime;
+  long system_uptime_long = 0;
+  string system_idle_time;
+  std::ifstream filestream(kProcDirectory + kUptimeFilename);
+  std::cout << "Yop";
+
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      linestream >> system_uptime >> system_idle_time;
+      long system_uptime_long = stol(system_uptime);
+      std::cout << "Hello ... line is system_uptime" << system_uptime_long << "\n";
+    }
+  }
+
+  return system_uptime_long; 
+}
 
 // TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+long LinuxParser::Jiffies() {
+  string line;
+  string system_uptime;
+  long system_uptime_long = 0;
+  string system_idle_time;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+  std::cout << "Yop";
+
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      //linestream >> system_uptime >> system_idle_time;
+      //long system_uptime_long = stol(system_uptime);
+      
+      std::cout << "Hello ... line is system_uptime" << line << "\n";
+    }
+  }
+  return 0; 
+  }
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function

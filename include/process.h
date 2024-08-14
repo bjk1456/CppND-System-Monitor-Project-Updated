@@ -17,9 +17,9 @@ class Process {
   bool operator<(Process const& a) const;  // TODO: See src/process.cpp
   int pid = 0;
   std::string command = "none";
-  long int up_time = 0;
+  //long int up_time = 0;
   double cpu_usage = 0;
-  std::string ram = "";
+  //std::string ram = "";
   std::string user = "";
 
 

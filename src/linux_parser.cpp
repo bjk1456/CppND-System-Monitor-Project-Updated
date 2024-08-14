@@ -45,7 +45,6 @@ string LinuxParser::Kernel() {
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
-    //std::cout << "The line is " << line;
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
   }
@@ -64,7 +63,6 @@ vector<int> LinuxParser::Pids() {
       string filename(file->d_name);
       if (std::all_of(filename.begin(), filename.end(), isdigit)) {
         int pid = stoi(filename); 
-        //std::cout << "The pid is " << pid;
         pids.push_back(pid);
       }
     }
@@ -78,8 +76,6 @@ vector<int> LinuxParser::Pids() {
 float LinuxParser::MemoryUtilization() {
   string line;
   std::ifstream filestream(kProcDirectory + kMeminfoFilename);
-  //std::cout << "Yop";
-  //std::regex value("[0-9]");
   string key, size;
   string mem_total_str = "MemTotal";
   float mem_total_flt = 0;
@@ -111,8 +107,6 @@ float LinuxParser::MemoryUtilization() {
   }
   if((mem_total_flt > 0) && (mem_avail_flt > 0)){
     percent_mem_utilized = (mem_avail_flt / mem_total_flt);
-    //std::cout << "percent_mem_utilized" << percent_mem_utilized;
-
   }
 
   return percent_mem_utilized; 
@@ -125,17 +119,14 @@ long LinuxParser::UpTime() {
   long system_uptime_long = 0;
   string system_idle_time;
   std::ifstream filestream(kProcDirectory + kUptimeFilename);
-  //std::cout << "Yop";
 
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> system_uptime >> system_idle_time;
       system_uptime_long = stol(system_uptime);
-      //std::cout << "Hello ... line is system_uptime" << system_uptime_long << "\n";
     }
   }
-  //std::cout << "Going to return " << system_uptime_long << "\n";
   return system_uptime_long; 
 }
 
@@ -145,15 +136,10 @@ long LinuxParser::Jiffies() {
   string system_uptime;
   string system_idle_time;
   std::ifstream filestream(kProcDirectory + kStatFilename);
-  //std::cout << "Yop";
 
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
-      //linestream >> system_uptime >> system_idle_time;
-      //long system_uptime_long = stol(system_uptime);
-      
-      //std::cout << "Hello ... line is system_uptime" << line << "\n";
     }
   }
   return 0; 
@@ -175,70 +161,39 @@ float LinuxParser::CpuUtilization(int pid) {
   std::ifstream filestream(kProcDirectory + std::to_string(pid) + "/stat");
         if (filestream.is_open()) {
             string line;
-            
             vector<string> tokens;
             while (std::getline(filestream, line)) {
             std::istringstream linestream(line);
-            //std::cout << pid << " KARLLLLLLLL";
-            //std::cout << "Hello ... cmdline is " << line << "\n";
             std::string token;
             std::stringstream ss(line);
             while(std::getline(ss, token, ' ')) {
-                //std::cout << token << '\n';
                 tokens.push_back(token);
             }
-            //proc.command = line;
             }
             long int start_time = stol(tokens[22]);
             long int aggregate_time = start_time / sysconf(_SC_CLK_TCK);
-            /**
-            std::cout << "The 22nd entry is " << tokens[22] << "\n";
-            std::cout << "start_time is " << start_time << "\n";
-            std::cout << "The aggregate time is = " << aggregate_time << "\n";
-            std::cout << "ZIT";
-            */
-            //proc.up_time = aggregate_time;
-
-            //Calculate Processor Utilization
-
             long up_time = LinuxParser::UpTime();
-                        //std::cout << "Every";
-            //std::cout << "Sir up_time is " << up_time;
             long int utime = stoul(tokens[14]);
             long int stime = stoul(tokens[15]);
             long int cutime = stoul(tokens[16]);
             long int cstime = stoul(tokens[17]);
-            
             double total_time = 0;
             long int seconds = 0;
-            //double cpu_usage;
 
             total_time = utime + stime + cutime + cstime;
-            //std::cout << "total_time is " << total_time;
             seconds = aggregate_time - up_time;
-            //std::cout << "up_time iz  " << up_time << " aggregate_time iz " << aggregate_time;
-            //std::cout << "seconds is " << seconds;
-            //std::cout << "feels are " <<  fella << " OK?";
             float cpu_usage = ((total_time / sysconf(_SC_CLK_TCK)) / seconds) * 100;
-            //std::cout << "cpu_usage YANZ ... " << cpu_usage;
             return cpu_usage;
-            //proc.cpu_usage = cpu_usage;
             
         }
 
-            //#14 utime - CPU time spent in user code, measured in clock ticks
-            //#15 stime - CPU time spent in kernel code, measured in clock ticks
-            //#16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
-            //#17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
-            //#22 starttime - Time when the process started, measured in clock ticks
-  
   return cpu_usage; }
 
 
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
-      std::ifstream filestream(kProcDirectory + "/stat");
+    std::ifstream filestream(kProcDirectory + "/stat");
     string line;
     string key;
     string value;
@@ -267,9 +222,6 @@ int LinuxParser::RunningProcesses() {
       while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> key >> value;
-
-
-      
       if(key == "procs_running"){
         run_procs = stoi(value);
       }
@@ -285,7 +237,7 @@ string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) { 
-      std::ifstream filestream(kProcDirectory + std::to_string(pid) + "/status");
+    std::ifstream filestream(kProcDirectory + std::to_string(pid) + "/status");
     string line;
     string key;
     string value;
@@ -293,11 +245,9 @@ string LinuxParser::Ram(int pid) {
     if (filestream.is_open()) {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
-        //linestream >> key >> value;
         string name, size_str, unit;
         linestream >> name >> size_str >> unit;
         if(name == "VmSize:"){
-            //std::cout << "99Cerl" << "\n";
             int size = stoi(size_str);
             ram = std::to_string(size) + " MB";
             break;
@@ -322,11 +272,9 @@ long LinuxParser::UpTime(int pid) {
     std::ifstream filestream(kProcDirectory + std::to_string(pid) + "/stat");
     string line;
     long up_time = 0;
-    //std::cout << "COUT IT HERE";
     if (filestream.is_open()) {
       while (std::getline(filestream, line)) {
         std::istringstream linestream(line);
-        //std::cout << "Da LINE IS " << line;
         std::stringstream ss(line);
         vector<string> res;
         string token;

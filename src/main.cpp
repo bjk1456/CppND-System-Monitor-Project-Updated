@@ -6,12 +6,7 @@ using std::vector;
 
 int main() {
   System system;
-  //system.Kernel();
-  //std::cout << "The memory is " << system.MemoryUtilization();
-  std::cout << "The system upTime ips " << system.UpTime();
-  //system.Jiffies();
-  LinuxParser::Pids();
-
+  /**
   vector<Process>processes = system.Processes();
   std::cout << "Hello";
   for(Process p : processes){
@@ -22,7 +17,6 @@ int main() {
     std::cout << "p.User() == " << p.User() << "\n";
     std::cout << "p.Ram() == " << p.Ram() << "\n";
   }
-  std::cout << "Da TotalProcesses is " << system.TotalProcesses();
-  std::cout << "Da RunningProcesses is " << system.RunningProcesses();
-  //NCursesDisplay::Display(system);
+  */
+  NCursesDisplay::Display(system);
 }

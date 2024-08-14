@@ -18,6 +18,9 @@ class Process {
   int pid = 0;
   std::string command = "none";
   long int up_time = 0;
+  double cpu_usage = 0;
+  std::string ram = "";
+  std::string user = "";
 
 
   // TODO: Declare any necessary private members

@@ -130,11 +130,11 @@ long LinuxParser::UpTime() {
     while (std::getline(filestream, line)) {
       std::istringstream linestream(line);
       linestream >> system_uptime >> system_idle_time;
-      long system_uptime_long = stol(system_uptime);
+      system_uptime_long = stol(system_uptime);
       std::cout << "Hello ... line is system_uptime" << system_uptime_long << "\n";
     }
   }
-
+  std::cout << "Going to return " << system_uptime_long << "\n";
   return system_uptime_long; 
 }
 

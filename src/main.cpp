@@ -8,7 +8,7 @@ int main() {
   System system;
   //system.Kernel();
   //std::cout << "The memory is " << system.MemoryUtilization();
-  //std::cout << "The system upTime ips " << system.UpTime();
+  std::cout << "The system upTime ips " << system.UpTime();
   //system.Jiffies();
   LinuxParser::Pids();
 
@@ -17,8 +17,12 @@ int main() {
   for(Process p : processes){
     std::cout << "p.id == " << p.Pid() << "\n";
     std::cout << "p.Command() == " << p.Command() << "\n";
+    std::cout << "p.Ram()) == " << p.Ram() << "\n";
     std::cout << "p.UpTime) == " << p.UpTime() << "\n";
-    
+    std::cout << "p.CpuUtilization() == " << p.CpuUtilization() << "\n";
+    std::cout << "p.User() == " << p.User() << "\n";
+
+
   }
   //NCursesDisplay::Display(system);
 }

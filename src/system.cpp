@@ -38,6 +38,12 @@ vector<Process>& System::Processes() {
         proc.pid = pid;
         string pid_dir = kProcDirectory.c_str() + std::to_string(pid);
         DIR* directory = opendir(pid_dir.c_str());
+               if( directory == NULL)
+    {
+            fprintf(stderr,"Could not open directory: %s\n",kProcDirectory.c_str() + std::to_string(pid));
+            break;
+ 
+    }
         struct dirent* file;
         while ((file = readdir(directory)) != nullptr) {
             //std::cout << file->d_name << "\n";

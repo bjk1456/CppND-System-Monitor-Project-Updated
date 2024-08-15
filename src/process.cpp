@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "process.h"
+#include <processor.h>
 #include <linux_parser.h>
 
 using std::string;
@@ -17,8 +18,10 @@ int Process::Pid() { return pid; }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() { 
-    cpu_usage = LinuxParser::CpuUtilization(pid);
-    return cpu_usage; }
+    Processor process;
+    float util = process.Utilization();
+    return util;
+}
 
 // TODO: Return the command that generated this process
 string Process::Command() { return command; }

@@ -132,17 +132,7 @@ long LinuxParser::UpTime() {
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
-  string line;
-  string system_uptime;
-  string system_idle_time;
-  std::ifstream filestream(kProcDirectory + kStatFilename);
-
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::istringstream linestream(line);
-    }
-  }
-  return 0; 
+  return ActiveJiffies() + IdleJiffies();
   }
 
 // TODO: Read and return the number of active jiffies for a PID
@@ -150,15 +140,54 @@ long LinuxParser::Jiffies() {
 long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+long LinuxParser::ActiveJiffies() {
+  string line;
+  string system_uptime;
+  string system_idle_time;
+  long active = 0;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      string row_h, user,nice,system,idle,iowait,irq,softirq,steal,guest,guest_nice;
+      //CPU_Percentage = (totald - idled)/totald
+
+      linestream >> row_h >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal;
+      active = stoi(user) + stoi(nice) + stoi(system) + stoi(irq) + stoi(softirq) + stoi(steal);
+
+      return active;
+    }
+  }
+  return active; 
+  }
 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+long LinuxParser::IdleJiffies() { 
+  string line;
+  string system_uptime;
+  string system_idle_time;
+  long t_idle = 0;
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      std::istringstream linestream(line);
+      string row_h, user,nice,system,idle,iowait;
+      //CPU_Percentage = (totald - idled)/totald
+
+      linestream >> row_h >> user >> nice >> system >> idle >> iowait;
+      t_idle = stoi(idle) + stoi(iowait);
+      return t_idle;
+    }
+  }
+  return t_idle; 
+  }
 
 // TODO: Read and return CPU utilization
 float LinuxParser::CpuUtilization(int pid) {
   float cpu_usage = 0;
-  std::ifstream filestream(kProcDirectory + std::to_string(pid) + "/stat");
+  std::ifstream filestream(kProcDirectory + std::to_string(pid) + kStatFilename);
         if (filestream.is_open()) {
             string line;
             vector<string> tokens;

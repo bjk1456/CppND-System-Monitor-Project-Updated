@@ -261,7 +261,18 @@ int LinuxParser::RunningProcesses() {
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Command(int pid) {
+    string cmd = "";
+    std::ifstream filestream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
+      string line;
+      if (filestream.is_open()) {
+          while (std::getline(filestream, line)) {
+          std::istringstream linestream(line);
+          cmd = line;
+          }
+      }
+  return cmd; 
+  }
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -289,11 +300,55 @@ string LinuxParser::Ram(int pid) {
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Uid(int pid) { 
+  std::ifstream filestream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+    string line;
+    string real_uid;
+    if (filestream.is_open()) {
+        while (std::getline(filestream, line)) {
+            std::istringstream linestream(line);
+            //fields taken from https://man7.org/linux/man-pages/man5/proc_pid_status.5.html
+            string row_heading, real_uid_s, effective_uid, saved_set_uid, filesystem_uid;
+            if(row_heading == "Uid:"){
+            linestream >> row_heading >> real_uid >> effective_uid >> saved_set_uid >> filesystem_uid;
+            break;
+            }
+        }
+    }
+    
+    
+  return real_uid; }
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid) {
+    std::ifstream filestream(kPasswordPath);
+    string username;
+    int uid;
+    string line;
+    if (filestream.is_open()) {
+        while (std::getline(filestream, line)) {
+            std::istringstream linestream(line);
+            std::stringstream ss(line);
+            vector<string> res;
+            string token;
+            char delimiter = ':';
+            while (std::getline(ss, token, delimiter)) {
+                res.push_back(token);
+                }
+            //std::cout << "The uid is " << res[2] << " the username is " << res[0];
+            if(pid == stoi(res[2])){
+                username = res[0];
+                break;
+            }
+            for(string s : res){
+                //std::cout << "The token is " << s;
+            }
+        }
+    }
+
+  return username; 
+  }
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function

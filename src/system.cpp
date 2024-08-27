@@ -43,6 +43,12 @@ vector<Process>& System::Processes() {
             break;
  
     }
+          
+          proc.command = LinuxParser::Command(pid);
+          proc.user = LinuxParser::User(pid);
+          proc.cpu_usage = LinuxParser::CpuUtilization(pid);
+          proc.ram = LinuxParser::Ram(pid);
+          proc.up_time = LinuxParser::UpTime();
           processes_.push_back(proc);
     }
     

@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <dirent.h>
-#include <filesystem>
 #include <string>
 #include <iostream>
 #include <map>
@@ -65,7 +64,7 @@ float System::MemoryUtilization() {
 }
 
 // TODO: Return the operating system name
-std::string System::OperatingSystem() { return string(); }
+std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
 // TODO: Return the number of processes actively running on the system
 int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }

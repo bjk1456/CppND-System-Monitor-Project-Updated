@@ -48,7 +48,8 @@ vector<Process>& System::Processes() {
           //proc.cpu_usage = LinuxParser::CpuUtilization();
           proc.ram = LinuxParser::Ram(pid);
           proc.up_time = LinuxParser::UpTime();
-          processes_.push_back(proc);
+          processes_.emplace_back(proc);
+          std::sort(processes_.rbegin(), processes_.rend());
     }
     
     return processes_; }

@@ -45,7 +45,7 @@ vector<Process>& System::Processes() {
           
           proc.command = LinuxParser::Command(pid);
           proc.user = LinuxParser::User(pid);
-          proc.cpu_usage = LinuxParser::CpuUtilization(pid);
+          //proc.cpu_usage = LinuxParser::CpuUtilization();
           proc.ram = LinuxParser::Ram(pid);
           proc.up_time = LinuxParser::UpTime();
           processes_.push_back(proc);

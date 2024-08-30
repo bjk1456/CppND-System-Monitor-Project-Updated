@@ -18,9 +18,12 @@ int Process::Pid() { return pid; }
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() { 
-    Processor process;
-    float util = process.Utilization();
-    return util;
+    float process_totaltime = (float) LinuxParser::ActiveJiffies(Pid()) / (float) sysconf(_SC_CLK_TCK);  
+    float process_startime = (float) LinuxParser::UpTime(Pid()); 
+    float system_uptime = (float) LinuxParser::UpTime(); 
+    float process_uptime = system_uptime - process_startime;
+    
+    return process_totaltime / process_uptime;
 }
 
 // TODO: Return the command that generated this process

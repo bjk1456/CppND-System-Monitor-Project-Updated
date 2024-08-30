@@ -38,9 +38,10 @@ vector<Process>& System::Processes() {
         DIR* directory = opendir(pid_dir.c_str());
                if( directory == NULL)
     {
-            fprintf(stderr,"Could not open directory: %s\n",kProcDirectory.c_str() + std::to_string(pid));
+            string error_msg = "Could not open directory:" + kProcDirectory + std::to_string(pid);
+            fprintf(stderr, "%s", error_msg.c_str());
             break;
- 
+
     }
           
           proc.command = LinuxParser::Command(pid);
